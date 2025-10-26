@@ -8,6 +8,7 @@
     @yield('styles')
 </head>
 <body>
+@include('admin.nav')
 @if(session('success'))
     <div class="alert alert-success">
         {{ session('success') }}

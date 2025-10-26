@@ -33,6 +33,16 @@
 
                     @include('shared.input', ['class' => 'col-sm-6 col-md-3', 'label' => 'codePostal', 'name' => 'postal_code', 'value' => $property->postal_code ?? '', 'pattern' => '[0-9]{2,10}', 'placeholder' => '75010'])
 
+                    @include('shared.input', [
+                   'type' => 'select',
+                   'class' => 'col-12',
+                   'label' => 'Équipements',
+                   'name' => 'options',
+                   'options' => $options,
+                   'multiple' => true,
+                   'value' => $property->options->pluck('id')->toArray() ?? []
+                 ])
+
                     @include('shared.input', ['type' => 'checkbox', 'class' => 'col-sm-6 col-md-3 d-flex align-items-center', 'label' => 'sold', 'name' => 'sold', 'value' => $property->sold ?? 0])
 
                     @include('shared.input', ['type' => 'file', 'class' => 'col-12', 'label' => 'Images (optional)', 'name' => 'images', 'accept' => 'image/*', 'multiple' => true, 'help' => 'Accepted formats: jpg, png. Maximum size to manage on the server side.'])

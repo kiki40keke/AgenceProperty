@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PropertyFormRequest;
+use App\Models\Option;
 use App\Models\Property;
 use Illuminate\Http\Request;
 
@@ -25,7 +26,7 @@ class PropertyController extends Controller
     public function create()
     {
         return view('admin.properties.form',[
-        'property' => new Property()
+        'property' => new Property(),'options' =>Option::pluck('name','id')->toArray()
         ]);
     }
 
@@ -36,6 +37,7 @@ class PropertyController extends Controller
     {
         $data = $request->validated();
         $property = Property::create($data);
+        $property->options()->sync($data['options']);
         return redirect()->route('admin.property.show', ['property' => $property->id])
             ->with('success', 'Property created successfully!');
     }
@@ -46,7 +48,7 @@ class PropertyController extends Controller
     public function show(string $id)
     {
         return view('admin.properties.show',[
-            'property' => Property::findOrFail($id)
+            'property' => Property::findOrFail($id)->load('options')
         ]);
     }
 
@@ -55,8 +57,9 @@ class PropertyController extends Controller
      */
     public function edit(Property $property)
     {
+
         return view('admin.properties.form',[
-            'property' => $property
+            'property' => $property,'options' =>Option::pluck('name','id')->toArray()
         ]);
     }
 
@@ -65,8 +68,10 @@ class PropertyController extends Controller
      */
     public function update(PropertyFormRequest $request, Property $property)
     {
+
         $data = $request->validated();
         $property->update($data);
+        $property->options()->sync($data['options']);
         return redirect()->route('admin.property.show', ['property' => $property->id])
             ->with('success', 'Property updated successfully!');
     }

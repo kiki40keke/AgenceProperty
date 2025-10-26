@@ -19,4 +19,9 @@ class Property extends Model
         'postal_code',
         'sold',
     ];
+
+    public function options(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Option::class);
+    }
 }
