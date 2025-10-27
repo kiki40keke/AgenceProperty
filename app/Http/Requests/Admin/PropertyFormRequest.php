@@ -36,6 +36,8 @@ class PropertyFormRequest extends FormRequest
             'sold' => ['boolean'],
             'options'   => ['required', 'array'],
             'options.*' => ['exists:options,id'],
+            'pictures' => ['required', 'array'],
+            'pictures.*' => ['image', 'mimes:jpeg,png,jpg,gif,svg'],
         ];
     }
 }

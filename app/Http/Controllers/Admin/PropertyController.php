@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PropertyFormRequest;
 use App\Models\Option;
+use App\Models\Picture;
 use App\Models\Property;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PropertyController extends Controller
 {
@@ -38,6 +40,8 @@ class PropertyController extends Controller
         $data = $request->validated();
         $property = Property::create($data);
         $property->options()->sync($data['options']);
+        $property->attachedFiles($data['pictures']);
+
         return redirect()->route('admin.property.show', ['property' => $property->id])
             ->with('success', 'Property created successfully!');
     }
@@ -72,6 +76,7 @@ class PropertyController extends Controller
         $data = $request->validated();
         $property->update($data);
         $property->options()->sync($data['options']);
+        $property->attachedFiles($data['pictures']);
         return redirect()->route('admin.property.show', ['property' => $property->id])
             ->with('success', 'Property updated successfully!');
     }
@@ -81,6 +86,9 @@ class PropertyController extends Controller
      */
     public function destroy(Property $property)
     {
+        Picture::destroy($property->pictures()->pluck('id')->toArray());
+
+        Storage::disk('public')->deleteDirectory('properties/' . $property->id);
         $property->delete();
         return redirect()->route('admin.property.index')
             ->with('success', 'Property deleted successfully!');

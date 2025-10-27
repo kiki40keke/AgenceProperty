@@ -51,12 +51,14 @@
             <div class="row g-4">
                 <!-- Left: image -->
                 <div class="col-lg-6">
-                    <div class="ratio ratio-16x9 rounded overflow-hidden">
-                        <img
-                            src="{{ $property->image ? asset('storage/' . $property->image) : 'https://via.placeholder.com/900x500?text=Image+propriété' }}"
-                            alt="Image propriété"
-                            class="w-100 h-100 object-cover"
-                        >
+                    <div class="carousel-inner">
+                        @foreach($property->pictures as $picture)
+                            <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                                <img src="{{ $picture->getPicturesUrl() ?? 'https://placehold.co/600x400' }}"
+                                     alt="Image propriété" width="600px" height="400px" class="img-fluid rounded shadow-sm">
+                            </div>
+                        @endforeach
+
                     </div>
 
                     {{-- If you want thumbnails or multiple images, consider adding them here --}}

@@ -14,7 +14,13 @@
 
         </ul>
         <div class="col-md-3 text-end">
-            <button type="button" class="btn btn-outline-primary me-2">Login</button>
+            @auth
+                <form action="{{route('logout')}}" method="post">
+                    @csrf
+                    <button type="submit" class="btn btn-outline-primary me-2">Logout</button>
+                </form>
+            @endauth
+
         </div>
     </header>
 </div>

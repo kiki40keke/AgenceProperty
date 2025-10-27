@@ -5,13 +5,14 @@
 @section('content')
     <div class="card shadow-sm mb-4">
         <div class="card-body">
-            <h3 class="card-title mb-3">Create a property</h3>
+            <h3 class="card-title mb-3">{{$property->exists ? 'Edit a Property' : 'Add New Property'}}</h3>
 
             <form action="{{ route($property->exists ? 'admin.property.update' : 'admin.property.store',$property) }}" method="post"  enctype="multipart/form-data" novalidate>
                 @csrf
                @method($property->exists ? 'PUT' : 'POST')
 
-
+                <div class="row">
+                    <div class="col-8">
                 <div class="row g-3">
                     @include('shared.input', ['class' => 'col-12', 'label' => 'Titre', 'name' => 'title', 'value' => $property->title ?? '', 'placeholder' => 'Ex: Beautiful bright apartment'])
 
@@ -45,7 +46,6 @@
 
                     @include('shared.input', ['type' => 'checkbox', 'class' => 'col-sm-6 col-md-3 d-flex align-items-center', 'label' => 'sold', 'name' => 'sold', 'value' => $property->sold ?? 0])
 
-                    @include('shared.input', ['type' => 'file', 'class' => 'col-12', 'label' => 'Images (optional)', 'name' => 'images', 'accept' => 'image/*', 'multiple' => true, 'help' => 'Accepted formats: jpg, png. Maximum size to manage on the server side.'])
 
                     <div class="col-12">
                         <div class="d-flex gap-2">
@@ -55,6 +55,31 @@
                             <a href="/admin/properties" class="btn btn-outline-secondary">Annuler</a>
                         </div>
                     </div>
+                </div>
+                    </div>
+
+
+
+                    <div class="col-4">
+                        <div class="row">
+                            @include('shared.input', ['type' => 'file', 'class' => 'col-6', 'label' => 'Images (optional)', 'name' => 'pictures', 'accept' => 'image/*', 'multiple' => true, 'help' => 'Accepted formats: jpg, png. Maximum size to manage on the server side.'])
+                            @if($property->exists)
+                            <div class="col-6">
+                                @foreach($property->pictures as $picture)
+                                    <div id="picture{{$picture->id}}" class="d-inline-block me-2 mb-2 text-center">
+                                        <img src="{{$picture->getPicturesUrl()}}" alt="" class="img-thumbnail mb-2 " style="max-height: 150px;">
+                                        <button class="btn btn-danger" type="button" hx-delete="{{route('admin.picture.destroy',$picture)}}" hx-swap="delete" hx-target="#picture{{$picture->id}}">
+                                            delete
+                                        </button>
+                                    </div>
+
+                                @endforeach
+
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+
                 </div>
             </form>
         </div>

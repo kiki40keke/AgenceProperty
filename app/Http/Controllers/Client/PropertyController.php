@@ -52,7 +52,7 @@ class PropertyController extends Controller
 
     public function show($slug, $property)
     {
-        $property = Property::where('id', $property)->first();
+        $property = Property::findOrFail($property)->load('options');
         if ($slug !== $property->getSlug()) {
             return redirect()->route('properties.show', [
                 'slug' => $property->getSlug(),

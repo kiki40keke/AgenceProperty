@@ -8,8 +8,26 @@
         <div class="row">
             <!-- Image -->
             <div class="col-md-6 mb-4">
-                <img src="{{ $property->image ?? 'https://placehold.co/600x400' }}"
-                     alt="Image propriété" class="img-fluid rounded shadow-sm">
+                <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @foreach($property->pictures as $picture)
+                            <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                                <img src="{{ $picture->getPicturesUrl() ?? 'https://placehold.co/600x400' }}"
+                                     alt="Image propriété" width="600px" height="400px" class="img-fluid rounded shadow-sm">
+                            </div>
+                        @endforeach
+
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+
                 <p class="mb-3">
                     @if($property->options->isNotEmpty())
                         {{-- option: vous pouvez afficher en badges pill --}}
