@@ -1,61 +1,230 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Gestion Agence — README
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> Application Laravel pour gérer des **propriétés** et leurs **options**, avec une **interface d’administration** sécurisée (authentification), ainsi qu’un **formulaire de contact** qui envoie des e-mails.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ✨ Fonctionnalités
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **CRUD Propriétés** : création, édition, suppression, archivage/activation.
+- **Options des propriétés** : gestion des options (ex. “Piscine”, “Garage”) et association **many-to-many**.
+- **Médias** : upload d’images, miniature, image principale, lien symbolique `storage:link`.
+- **Recherche & filtres** : par prix, surface, ville, options, statut.
+- **Espace Admin** : tableau de bord, gestion des utilisateurs/propriétés/options.
+- **Authentification** : inscription, connexion, mot de passe oublié (Laravel standard / Breeze / Jetstream, au choix).
+- **Formulaire de contact** : envoi d’e-mails à l’administrateur (Mailtrap/Mailhog/SMTP).
+- **Validation & sécurité** : Form Requests, CSRF, Policies/Gates basiques.
+- **Seeders** : données de démo (utilisateur admin + propriétés factices).
+- **Prêt pour la prod** : config cache, route cache, queue pour l’e-mail (optionnel).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🏗️ Stack technique
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Laravel** 11.x (PHP ≥ 8.2)
+- **MySQL** / MariaDB (ou SQLite pour le dev)
+- **Blade** / Tailwind (ou Bootstrap, selon votre projet)
+- **Laravel Mail** (Mailtrap/Mailhog/SMTP)
+- **Queues** (sync en dev, database/redis en prod)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🚀 Démarrage rapide
 
-## Laravel Sponsors
+### 1) Cloner & installer
+```bash
+git clone <votre-repo> gestion-agence
+cd gestion-agence
+composer install
+cp .env.example .env
+php artisan key:generate
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 2) Configurer la base de données
+Dans `.env` :
+```dotenv
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=gestion_agence
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-### Premium Partners
+### 3) Configurer l’envoi d’e-mails
+> Pour du dev, Mailtrap/Mailhog est recommandé.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+**Mailtrap (exemple)**
+```dotenv
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your_user
+MAIL_PASSWORD=your_pass
+MAIL_ENCRYPTION=null
+MAIL_FROM_ADDRESS="no-reply@gestion-agence.test"
+MAIL_FROM_NAME="Gestion Agence"
+ADMIN_EMAIL="admin@gestion-agence.test"
+```
 
-## Contributing
+**Mailhog (exemple)**
+```dotenv
+MAIL_MAILER=smtp
+MAIL_HOST=127.0.0.1
+MAIL_PORT=1025
+MAIL_ENCRYPTION=null
+MAIL_FROM_ADDRESS="no-reply@gestion-agence.test"
+MAIL_FROM_NAME="Gestion Agence"
+ADMIN_EMAIL="admin@gestion-agence.test"
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4) Migrer & peupler
+```bash
+php artisan migrate --seed
+php artisan storage:link
+```
 
-## Code of Conduct
+> Le seeder crée un **compte admin** et quelques propriétés factices (voir `database/seeders`).
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 5) Lancer le serveur
+```bash
+php artisan serve
+```
 
-## Security Vulnerabilities
+### 6) (Optionnel) Lancer les files (queues) pour l’e-mail
+```bash
+php artisan queue:work
+```
+> En dev, vous pouvez laisser `MAIL_MAILER=log` ou `sync`. En prod, utilisez `database`/`redis` + `supervisor`.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 🧭 Structure & routes
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **Accueil** : `/` (liste + recherche)
+- **Propriétés** : `/properties`, `/properties/{slug}`
+- **Contact** : `/contact` (GET/POST) → envoie un e-mail à `ADMIN_EMAIL`
+- **Admin** : `/admin` (protégé par auth)
+    - Gestion des Propriétés : `/admin/properties`
+    - Gestion des Options : `/admin/options`
+    - Gestion des Utilisateurs (selon vos besoins)
+
+> L’auth utilise les middlewares `auth` et potentiellement `can:...` (Policies) pour l’accès au back-office.
+
+---
+
+## 📮 Formulaire de contact (exemple)
+
+- **Contrôleur** : `App\Http\Controllers\ContactController`
+- **Request** : `App\Http\Requests\ContactRequest` (validation)
+- **Mailable** : `App\Mail\ContactMessage`
+- **Envoi** :
+  ```php
+  Mail::to(config('mail.admin_email', env('ADMIN_EMAIL')))
+      ->send(new ContactMessage($data));
+  ```
+- **Config personnalisée** : ajoutez dans `config/mail.php`
+  ```php
+  'admin_email' => env('ADMIN_EMAIL', 'admin@example.com'),
+  ```
+
+---
+
+## 🖼️ Gestion des images
+
+- Upload via `Storage` (disk `public`).
+- Lien public : `php artisan storage:link`.
+- Colonnes DB typiques : `pictures` table (path, property_id, is_featured, ...).
+- Affichage d’une miniature :
+  ```blade
+  <img src="{{ $picture->url() }}" alt="{{ $property->title }}" class="img-thumbnail">
+  ```
+- **Astuce** : définir une **image principale** (ex: boolean `is_featured`) pour lister la 1ère image partout.
+
+---
+
+## 🔐 Authentification
+
+- Utilisez **Laravel Breeze** (recommandé pour un setup rapide) :
+  ```bash
+  composer require laravel/breeze --dev
+  php artisan breeze:install blade
+  npm install && npm run build
+  ```
+- Ou conservez votre implémentation actuelle (login/register/password reset).
+
+---
+
+## ✅ Tests (exemples)
+
+- Tests de routes publiques / admin (403 si non authentifié).
+- Tests du Contact (validation + e-mail envoyé).
+- Tests du CRUD Propriétés/Options.
+```bash
+php artisan test
+```
+
+---
+
+## ⚙️ Commandes utiles
+
+```bash
+# Optimisation prod
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+# Nettoyage cache
+php artisan optimize:clear
+
+# Dump du schéma (optionnel)
+php artisan schema:dump
+```
+
+---
+
+## 🗺️ Roadmap (suggestions)
+
+- [ ] Pagination & tris avancés
+- [ ] Upload multiple + recadrage/optimisation (Intervention Image / Spatie Media Library)
+- [ ] Favoris pour les utilisateurs connectés
+- [ ] Export CSV/Excel des propriétés (Laravel Excel)
+- [ ] Rôles & permissions (spatie/laravel-permission)
+- [ ] Tests E2E (Pest + Laravel Dusk)
+
+---
+
+## 🛡️ Sécurité
+
+- Mettez `APP_KEY` et variables d’environnement **hors dépôt**.
+- Utilisez HTTPS en prod.
+- Vérifiez les autorisations (`Policies`, `Gates`) côté admin.
+- Filtrez/validez toutes les entrées (Form Requests).
+
+---
+
+## 📄 Licence
+
+Projet distribué sous licence **MIT**.  
+© Votre Nom / Organisation.
+
+---
+
+## 🤝 Contribuer
+
+1. Fork
+2. Créez une branche : `git checkout -b feature/ma-fonctionnalite`
+3. Commit : `git commit -m "Ajoute ma fonctionnalité"`
+4. Push : `git push origin feature/ma-fonctionnalite`
+5. Ouvrez une Pull Request
+
+---
+
+## 📬 Support
+
+- Ouvrir une issue
+- Ou contactez : `admin@gestion-agence.test`
+
+---
+
+> **Astuce** : si vous déployez, pensez à configurer la **file d’attente** pour l’envoi d’e-mails et à définir `QUEUE_CONNECTION=database` + `php artisan queue:table && php artisan migrate`, puis utilisez `supervisor` pour `queue:work` en continu.
