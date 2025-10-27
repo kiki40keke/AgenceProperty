@@ -51,7 +51,7 @@
 
 <div class="{{ $wrapperClass }}">
     {{-- Do not duplicate label for checkbox (label is rendered inside .form-check) --}}
-    @if($type !== 'checkbox' && $type !== 'file')
+    @if($type !== 'checkbox' && $type !== 'file' && !empty($label))
         <label for="{{ $name }}" class="form-label">{{ $label }}</label>
     @endif
 
